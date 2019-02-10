@@ -1,0 +1,13 @@
+#contentWrapper {
+    padding-top:20px;
+}
+
+.mainContentContainer {
+    z-index:100;
+    position:relative;
+    top:-70px;
+}
+
+.help-block {
+    color:red!important;
+}
