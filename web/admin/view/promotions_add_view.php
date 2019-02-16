@@ -42,50 +42,50 @@
 
 <script>
 
-var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-                
-$('#expiringDate').datepicker({
-    uiLibrary: 'bootstrap4',
-    iconsLibrary: 'fontawesome',
-    format: 'dd/mm/yyyy',
-    minDate: today
-});
-
-$(document).ready(function() {
-    $('#addPromotionForm').bootstrapValidator({
-        fields: {
-            title: {
-                validators: {
-                    notEmpty: {
-                        message: 'The Title is required and cannot be empty. '
-                    }
-                }
-            },
-            info: {
-                validators: {
-                    notEmpty: {
-                        message: 'The Deal Info is required and cannot be empty. '
-                    }
-                }
-            },            
-            dailyRate: {
-                validators: {
-                    notEmpty: {
-                        message: 'The Daily Rate is required and cannot be empty. '
-                    },
-                    numeric: {
-                        message: 'The Daily Rate must be a number'
-                    }                    
-                }
-            },
-            expiringDate: {
-                validators: {
-                    notEmpty: {
-                        message: 'The expiry date is required and cannot be empty. '
-                    }
-                }
-            }                 
-        }
+    var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+                    
+    $('#expiringDate').datepicker({
+        uiLibrary: 'bootstrap4',
+        iconsLibrary: 'fontawesome',
+        format: 'dd/mm/yyyy',
+        minDate: today
     });
-});
+
+    $(document).ready(function() {
+        $('#addPromotionForm').bootstrapValidator({
+            fields: {
+                title: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The Title is required and cannot be empty. '
+                        }
+                    }
+                },
+                info: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The Deal Info is required and cannot be empty. '
+                        }
+                    }
+                },            
+                dailyRate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The Daily Rate is required and cannot be empty. '
+                        },
+                        numeric: {
+                            message: 'The Daily Rate must be a number'
+                        }                    
+                    }
+                },
+                expiringDate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The expiry date is required and cannot be empty. '
+                        }
+                    }
+                }                 
+            }
+        });
+    });
 </script>

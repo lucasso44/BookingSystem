@@ -19,8 +19,14 @@
             </div>
             <div class="modal-body">
                 <p>Please use the form below to sign up for an account.</p>
+                <?php if($signUpMessage != "") : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= $signUpMessage ?>
+                    </div>    
+                <?php endif ?>                 
                 <form id="registerCustomerForm" action="signup.php" method="POST">
                     <input type="hidden" id="registerCustomerAttempt" name="registerCustomerAttempt" value="1">
+                    <input type="hidden" id="url" name="url" value="<?= $url ?>">
                     <div class="form-group">
                         <label for="firstName">First Name</label>
                         <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
@@ -50,8 +56,8 @@
                         <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone No">
                     </div>                                          
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Register</button>
-                        <a class="btn btn-primary" href="index.php" role="button">Cancel</a>                                        
+                        <button type="submit" class="btn btn-success">Sign Up</button>
+                        <a class="btn btn-primary" href="<?= $urlFrom == '' ? 'index.php' : $urlFrom ?>" role="button">Cancel</a>                                        
                     </div>    
                 </form> 
             </div>        

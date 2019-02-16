@@ -36,7 +36,7 @@
         <div id="searchFormContainer" class="col-md-12 p-4 bg-success text-white border border-bginfo rounded shadow shadow-lg">
             <form id="searchForm" action="browse.php" method="GET">
                 <div class="form-row">
-                    <div class="form-group col-md-2 col-sm-6">
+                    <div class="form-group col-lg-2 col-md-4 col-sm-6">
                         <label for="dateFrom">Date From</label>
                         <span data-container="body" 
                             data-toggle="popover" 
@@ -45,7 +45,7 @@
                             style="color: #ffffff;"><i class="fas fa-xs fa-info-circle"></i></span>                        
                         <input id="dateFrom" name="dateFrom" class="controls form-control" type="text" placeholder="Date From" readonly value="<?= getDateInUKFormat($vehicleModelQuery->dateFrom) ?>">
                     </div>
-                    <div class="form-group col-md-2 col-sm-6">
+                    <div class="form-group col-lg-2 col-md-4 col-sm-6">
                         <label for="dateTo">Date To</label>
                         <span data-container="body" 
                             data-toggle="popover" 
@@ -54,7 +54,7 @@
                             style="color: #ffffff;"><i class="fas fa-xs fa-info-circle"></i></span>                                                
                         <input id="dateTo" name="dateTo" class="controls form-control" type="text" placeholder="Date To" readonly value="<?= getDateInUKFormat($vehicleModelQuery->dateTo) ?>">
                     </div>                  
-                    <div class="form-group col-md-2 col-sm-6">
+                    <div class="form-group col-lg-2 col-md-4 col-sm-6">
                         <label for="passengerNo">No of Passengers</label>
                         <span data-container="body" 
                             data-toggle="popover" 
@@ -63,7 +63,7 @@
                             style="color: #ffffff;"><i class="fas fa-xs fa-info-circle"></i></span>                                                
                         <input type="text" id="passengerNo" name="passengerNo" class="controls form-control" placeholder="No of Passengers" value="<?= $vehicleModelQuery->passengerNo == 0 ? "" : $vehicleModelQuery->passengerNo ?>">
                     </div>                                       
-                    <div class="form-group col-md-2 col-sm-6">
+                    <div class="form-group col-lg-2 col-md-4 col-sm-6">
                         <label for="vehicleStandardId">Vehicle Standard</label>
                         <span data-container="body" 
                             data-toggle="popover" 
@@ -77,7 +77,7 @@
                             <option value="3" <?= $vehicleModelQuery->vehicleStandardId == 3 ? "selected" : "" ?>>VIP</option>
                         </select>
                     </div>                    
-                    <div class="form-group col-md-2 col-sm-6">
+                    <div class="form-group col-lg-2 col-md-4 col-sm-6">
                         <label for="licenceCategoryId">Driving License</label>
                         <span data-container="body" 
                             data-toggle="popover" 
@@ -90,8 +90,8 @@
                             <option value="2" <?= $vehicleModelQuery->licenceCategoryId == 2 ? "selected" : "" ?>>Bus (D)</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-1 col-sm-6">
-                        <label for="minDailyRate">Price (Min)</label>
+                    <div class="form-group col-lg-1 col-md-2 col-sm-6">
+                        <label for="minDailyRate">£ Min</label>
                         <select class="form-control" id="minDailyRate" name="minDailyRate">
                             <option value="0" <?= $vehicleModelQuery->minDailyRate == 0 ? "selected" : "" ?>>All</option>
                             <option value="40" <?= $vehicleModelQuery->minDailyRate == 40 ? "selected" : "" ?>>40</option>
@@ -113,8 +113,8 @@
                             <option value="200" <?= $vehicleModelQuery->minDailyRate == 200 ? "selected" : "" ?>>200</option>
                         </select>
                     </div>   
-                    <div class="form-group col-md-1 col-sm-6">
-                        <label for="maxDailyRate">Price (Max)</label>
+                    <div class="form-group col-lg-1 col-md-2 col-sm-6">
+                        <label for="maxDailyRate">£ Max</label>
                         <select class="form-control" id="maxDailyRate" name="maxDailyRate">
                             <option value="0" <?= $vehicleModelQuery->maxDailyRate == 0 ? "selected" : "" ?>>All</option>
                             <option value="40" <?= $vehicleModelQuery->maxDailyRate == 40 ? "selected" : "" ?>>40</option>
@@ -133,7 +133,7 @@
                             <option value="170" <?= $vehicleModelQuery->maxDailyRate == 170 ? "selected" : "" ?>>170</option>
                             <option value="180" <?= $vehicleModelQuery->maxDailyRate == 180 ? "selected" : "" ?>>180</option>
                             <option value="190" <?= $vehicleModelQuery->maxDailyRate == 190 ? "selected" : "" ?>>190</option>
-                            <option value="200" <?= $vehicleModelQuery->maxDailyRate == 200 ? "selected" : "" ?>>200</option>                           
+                            <option value="200" <?= $vehicleModelQuery->maxDailyRate == 200 ? "selected" : "" ?>>200</option>
                         </select>
                     </div>                                                                                                                                   
                 </div>
@@ -181,7 +181,7 @@
                             return;
                         }
 
-                        if (passengerNo == "" || isNaN(passengerNo)) {
+                        if (passengerNo != "" && isNaN(passengerNo)) {
                             $('#messageModalTitle').html('Search for Vehicle');
                             $('#messageModalBody').html('Please enter No of Passengers.');
                             $('#messageModal').modal('show');
@@ -203,22 +203,54 @@
     </div>        
 </div>
 
+<style>
+    .alert {
+        margin-bottom: 0rem;
+    }
+</style>
 
-<div class="container">
-<div class="row">
+<div id="searchResultsContainer" class="container rounded border">
+<div class="row card-deck">
+    <?php if($addedToBasketMessage != "") : ?>
+        <div class="col-12 alert alert-info" role="alert">
+            <?= $addedToBasketMessage ?>
+        </div>    
+    <?php endif ?>
+    <?php if($vehicleModelQuery->licenceCategoryId > 0) : ?>
+        <div class="col-12 alert alert-warning" role="alert">
+            You have opted for self drive. You own driver must provide a valid <?= $vehicleModelQuery->licenceCategoryId == 1 ? 'Minibus (D1)' : 'Bus (D)' ?> license.
+        </div>
+    <?php else : ?>
+        <div class="col-12 alert alert-warning" role="alert">
+            You have opted for a driver ('Driver Required').
+        </div>
+    <?php endif ?>
+    <?php if(sizeof($vehicleModels) == 0) : ?>
+        <div class="col-12 alert alert-success" role="alert">
+            No vehicle categories are currently available matching your search criteria. Please try again.
+        </div>
+    <?php elseif(sizeof($vehicleModels) == 1) : ?>
+        <div class="col-12 alert alert-success" role="alert">
+            One vehicle category is available which matches your search criteria.
+        </div>        
+    <?php else : ?>
+        <div class="col-12 alert alert-success" role="alert">
+            <?= sizeof($vehicleModels) ?> vehicle categories are available which match your search criteria.
+        </div>    
+    <?php endif ?>
     <?php foreach ($vehicleModels as $vehicleModel): ?>
         <?php if($vehicleModel->total > 0) : ?>
-        <div class="col-3 col-md-3 col-lg-3 mb-4 mr-4">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="assets/images/vehicleModels/<?=$vehicleModel->model?>.jpg" alt="Card image cap">
+        <div class="col-lg-4 col-md-6 col-sm-12 p-3">
+            <div class="card" style="min-height:450px;width: 18rem;margin:3px;">
+                <img class="card-img-top" src="assets/images/vehicleModels/<?=$vehicleModel->model?>.jpg" alt="<?=$vehicleModel->model?>">
                 <div class="card-body">
                     <h5 class="card-title"><?=$vehicleModel->model?></h5>
-                    <p class="card-text">No Available: <?=$vehicleModel->total ?></p>
-                    <p class="card-text">Daily rate: £<?=$vehicleModel->dailyRate?></p>
-                    <p class="card-text">Min: <?=$vehicleModel->minNoOfPassengers?> Max: <?=$vehicleModel->maxNoOfPassengers?></p>
-                    <p class="card-text">Standard: <?=$vehicleModel->standard?></p>
-                    <p class="card-text">Licence: <?=$vehicleModel->category?></p>
-                    <a href="basket_add.php?vehicleModelId=<?= $vehicleModel->id ?>" class="btn btn-success">Add to Basket</a>
+                    <span class="card-text">No Available: <?=$vehicleModel->total ?></span><br/>
+                    <span class="card-text">Daily rate: £<?=$vehicleModel->dailyRate?></span><br/>
+                    <span class="card-text">Min: <?=$vehicleModel->minNoOfPassengers?> Max: <?=$vehicleModel->maxNoOfPassengers?></span><br/>
+                    <span class="card-text">Standard: <?=$vehicleModel->standard?></span><br/>
+                    <span class="card-text">Licence: <?=$vehicleModel->category?></span><br/>
+                    <p class="card-text"><br/><a href="basket_add.php?vehicleModelId=<?= $vehicleModel->id ?>" class="btn btn-success">Add to Basket</a></p>
                 </div>
             </div>
         </div>

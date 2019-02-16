@@ -23,6 +23,7 @@
                     <?php endif ?>
                     <form id="signinForm" action="signin.php" method="POST">
                         <input type="hidden" id="signinAttempt" name="signinAttempt" value="2">
+                        <input type="hidden" id="url" name="url" value="<?= $url ?>">
                         <div class="form-group">
                             <label for="emailAddress">Email address</label>
                             <input type="email" class="form-control" id="emailAddress" name="emailAddress" placeholder="Email address">
@@ -32,11 +33,15 @@
                             <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                         </div>
                     </form> 
-                    <span><a href="signup.php">Sign up</a> for an account.</span> 
+                    <span><a href="signup.php?url=<?= $url ?>&from=<?= $urlFrom ?>">Sign up</a> for an account.</span> 
                 </div>
                 <div class="modal-footer">
                     <button id="signinButton" type="submit" class="btn btn-success">Sign In</button>
+                    <?php if($urlFrom == "") : ?>
                     <a class="btn btn-primary" href="index.php" role="button">Cancel</a>
+                    <?php else : ?>
+                    <a class="btn btn-primary" href="<?= $urlFrom ?>" role="button">Cancel</a>
+                    <?php endif ?>
                 </div>
         </div>
     </div>

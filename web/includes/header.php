@@ -13,9 +13,9 @@
     <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css"/>
     <script src="https://cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.0/js/bootstrapValidator.min.js" type="text/javascript"></script>    
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/style.v1.css" />
     <title>Berwyn Buses Hire Ltd</title>
-    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/png" href="favicon.png"/>
   </head>
   <body>
 
@@ -30,6 +30,7 @@
                     </button>
                 </div>
                 <div id="signinModalBody" class="modal-body">
+                    <p><strong>Existing Customer</strong></p>
                     <form id="signinForm" action="<?= basename($_SERVER['PHP_SELF']) ?>" method="POST">
                         <input type="hidden" id="signinAttempt" name="signinAttempt" value="1">
                         <div class="form-group">
@@ -41,6 +42,7 @@
                             <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                         </div>
                     </form> 
+                    <p><strong>New Customer</strong></p>
                     <span><a href="signup.php">Sign up</a> for an account.</span> 
                 </div>
                 <div class="modal-footer">
@@ -71,25 +73,29 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="browse.php">Browse</a>
-                    <a class="nav-item nav-link" href="#">Why Us</a>
+                    <a class="nav-item nav-link" href="browse.php"><i class="fas fa-bus"></i>&nbsp;Browse</a>
+                    <!-- <a class="nav-item nav-link" href="#">Why Us</a>
                     <a class="nav-item nav-link" href="#">Our Services</a>
-                    <a class="nav-item nav-link" href="#">Contact Us</a>
+                    <a class="nav-item nav-link" href="#">Contact Us</a> -->
                 </div>
                 <div class="navbar-nav">
                     <?php if($authUser->isSignedIn == 1) : ?>
-                    <a class="nav-item nav-link" href="bookings.php">My Bookings</a>                
+                    <a class="nav-item nav-link" href="bookings.php"><i class="fas fa-tasks"></i>&nbsp;My Bookings</a>                
                     <?php endif ?>
-                    <a class="nav-item nav-link" href="basket.php">View Basket (<?= getBasketSize() ?>)</a>                
+                    <a class="nav-item nav-link" href="basket.php"><i class="fas fa-shopping-basket"></i>&nbsp;View Basket 
+                    <?php if(getBasketSize() > 0 && basename($_SERVER['PHP_SELF']) != "checkout.php") : ?>
+                        <span class="badge badge-pill badge-success"><?= getBasketSize() ?></span>
+                    <?php endif ?>
+                    </a>                
                     <?php if($authUser->isSignedIn == 1) : ?>
-                    <a class="nav-item nav-link" href="signout.php">Sign Out</a>
+                    <a class="nav-item nav-link" href="signout.php"><i class="fas fa-user"></i>&nbsp;Sign Out</a>
                     <?php else : ?>                
                     <?php if((basename($_SERVER['PHP_SELF']) != "signin.php") && (basename($_SERVER['PHP_SELF']) != "signup.php")) : ?>
-                    <a class="nav-item nav-link" href="#" data-toggle="modal" data-target="#signinModal">Sign In</a>
+                    <a class="nav-item nav-link" href="#" data-toggle="modal" data-target="#signinModal"><i class="fas fa-user"></i>&nbsp;Sign In</a>
                     <?php endif ?>
                     <?php endif ?>
                     <?php if($authUser->isAdministrator == 1) : ?>
-                    <a class="nav-item nav-link" href="admin/index.php">Admin</a>
+                    <a class="nav-item nav-link" href="admin/index.php"><i class="fas fa-cog"></i>&nbsp;Admin</a>
                     <?php endif ?>
                 </div>                
             </div>
@@ -101,3 +107,4 @@
     <?php if($authUser->isSignedIn == 1) : ?>
         <h5>Welcome <?= $authUser->firstName ?></h5>
     <?php endif ?>
+    

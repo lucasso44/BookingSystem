@@ -62,6 +62,7 @@
         // https://stackoverflow.com/questions/6267614/convert-uk-date-to-mysql-date
         return DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y');
     }    
+    
     function isPostBackWithField($fieldName) {
             return $_SERVER["REQUEST_METHOD"] == "POST" && 
                 isset($_POST[$fieldName]);

@@ -20,15 +20,23 @@
     </div>
 
     <?php if(getBasketSize() == 0) : ?>
-        <p>There are no items in your basket.</p>
+        <div class="alert alert-success" role="alert">
+            There are no items in your basket.
+        </div>   
     <?php endif ?>
     <?php foreach($basketItems as $basketItem) : ?>
-        <div class="media">
+        <div class="media my-2 p-2 border rounded">
             <img src="assets/images/vehicleModels/<?= $basketItem->model ?>.jpg" width="100px" class="align-self-start mr-3" alt="">
             <div class="media-body">
                 <h5 class="mt-0"><?= $basketItem->model ?></h5>
-                <p><?= $basketItem->dateFrom ?> - <?= $basketItem->dateTo ?></p>
-                <p>£<?= $basketItem->dailyRate ?> per day</p>
+                <p><?= getDateInUKFormat($basketItem->dateFrom) ?> - <?= getDateInUKFormat($basketItem->dateTo) ?><br/>
+                £<?= $basketItem->dailyRate ?> per day<br/>
+                <?php if($basketItem->isSelfDriving == 0) : ?>
+                    From:&nbsp;<?= $basketItem->placeFrom?><br/>To:&nbsp;<?=$basketItem->placeTo?>
+                <?php else : ?>
+                    Self Driving
+                <?php endif ?>
+                </p>                
                 <p><a class="btn btn-outline-danger" href="basket.php?cmd=remove&id=<?= $basketItem->id ?>" role="button">Cancel</a></p>
             </div>
         </div>
@@ -36,7 +44,19 @@
     <?php if(getBasketSize() > 0) : ?>
         <div class="row text-right">
             <div class="col-12">
+                <?php if($authUser->isSignedIn == 1) : ?>
                 <a class="btn btn-success" href="checkout.php" role="button">Check Out</a>
+                <a class="btn btn-outline-primary" href="browse.php?revisit=1" role="button">Search for Vehicles</a>
+                <?php else : ?>
+                <a class="btn btn-success" href="signin.php?url=checkout.php&from=basket.php" role="button">Check Out</a>
+                <a class="btn btn-outline-primary" href="browse.php?revisit=1" role="button">Search for Vehicles</a>
+                <?php endif ?>
+            </div>
+        </div>
+    <?php else : ?>
+        <div class="row text-right">
+            <div class="col-12">
+                <a class="btn btn-outline-primary" href="browse.php?revisit=1" role="button">Search for Vehicles</a>
             </div>
         </div>
     <?php endif ?>

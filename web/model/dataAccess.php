@@ -158,12 +158,38 @@
 
         function getCurrentPromotions() {
             $pdo = $this->getPDO();
-            $statement = $pdo->prepare("SELECT * FROM Promotion ORDER BY id ASC LIMIT 3");
+            $statement = $pdo->prepare("SELECT 
+                                            p.*,
+                                            vm.model 
+                                        FROM 
+                                            Promotion p
+                                        JOIN
+                                            VehicleModel vm
+                                        ON
+                                            p.vehicleModelId = vm.id
+                                        WHERE expiringDate > CURDATE()  
+                                        ORDER BY expiringDate ASC LIMIT 3");
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_CLASS, "Promotion");
             return $result;
         }     
-
+        
+        function getCurrentVehicles() {
+            $pdo = $this->getPDO();
+            $statement = $pdo->prepare("SELECT 
+                                            v.*,
+                                            vm.* 
+                                        FROM 
+                                            Vehicle v
+                                        JOIN
+                                            VehicleModel vm
+                                        ON
+                                            v.vehicleModelId = vm.id  
+                                        ORDER BY registrationDate ASC LIMIT 3");
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_CLASS, "VehicleDetail");
+            return $result;
+        }     
         function getAllPromotions() {
             $pdo = $this->getPDO();
             $statement = $pdo->prepare("SELECT p.*, vm.model 
@@ -188,6 +214,31 @@
             $result = $statement->fetchAll(PDO::FETCH_CLASS, "Vehicle");
             return $result;
         }  
+
+        function getVehicleById($vehicleId) {
+            $pdo = $this->getPDO();
+            $statement = $pdo->prepare("SELECT * FROM Vehicle WHERE id = :vehicleId LIMIT 1");
+            $statement->bindParam(":vehicleId", $vehicleId, PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_CLASS, "Vehicle");
+            return sizeof($result) == 0 ? null : $result[0];
+        } 
+
+        function updateVehicle($vehicle) {
+            $pdo = $this->getPDO();
+            $statement = $pdo->prepare("UPDATE Vehicle 
+                                            SET id = :id, 
+                                                registrationNo = :registrationNo,
+                                                registrationDate = :registrationDate,
+                                                vehicleModelId = :vehicleModelId
+                                            WHERE id = :id");
+            $statement->bindParam(":id", $vehicle->id, PDO::PARAM_INT);
+            $statement->bindParam(":registrationNo", $vehicle->registrationNo);
+            $statement->bindParam(":registrationDate", $vehicle->registrationDate);
+            $statement->bindParam(":vehicleModelId", $vehicle->vehicleModelId, PDO::PARAM_INT);
+
+            return $statement->execute();          
+        }
 
         function addVehicle($vehicle) {
             $pdo = $this->getPDO();
@@ -214,6 +265,26 @@
             return $statement->execute();
         }
 
+        function updatePromotion($promotion) {
+            $pdo = $this->getPDO();
+            $statement = $pdo->prepare("UPDATE Promotion 
+                                            SET id = :id, 
+                                                title = :title,
+                                                info = :info,
+                                                vehicleModelId = :vehicleModelId, 
+                                                dailyRate = :dailyRate,
+                                                expiringDate = :expiringDate
+                                            WHERE id = :id");
+            $statement->bindParam(":id", $promotion->id, PDO::PARAM_INT);
+            $statement->bindParam(":title", $promotion->title);
+            $statement->bindParam(":info", $promotion->info);
+            $statement->bindParam(":vehicleModelId", $promotion->vehicleModelId);
+            $statement->bindParam(":dailyRate", $promotion->dailyRate);
+            $statement->bindParam(":expiringDate", $promotion->expiringDate);
+
+            return $statement->execute();          
+        }
+
         function deleteVehicle($vehicleId) {
             $pdo = $this->getPDO();
             $statement = $pdo->prepare("DELETE FROM Vehicle WHERE id = :vehicleId");
@@ -235,6 +306,15 @@
             $result = $statement->fetch();
             return intval($result[0]);
         }
+
+        function getPromotionById($promotionId) {
+            $pdo = $this->getPDO();
+            $statement = $pdo->prepare("SELECT * FROM Promotion WHERE id = :promotionId LIMIT 1");
+            $statement->bindParam(":promotionId", $promotionId, PDO::PARAM_INT);
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_CLASS, "Promotion");
+            return sizeof($result) == 0 ? null : $result[0];
+        }   
         
         function getNumberOfVehicles() {
             $pdo = $this->getPDO();
@@ -279,14 +359,27 @@
         
         function deleteBookingItem($bookingItem) {
             $pdo = $this->getPDO();
-            $statement = $pdo->prepare("DELETE FROM BookingItem WHERE id = :id");
-            $statement->bindParam(":id", $bookingItem->id, PDO::PARAM_INT);
-            $statement->execute();
 
             $statement = $pdo->prepare("DELETE FROM BookingItemSchedule WHERE bookingItemId = :id");
             $statement->bindParam(":id", $bookingItem->id, PDO::PARAM_INT);          
+            $statement->execute();            
+
+            $statement = $pdo->prepare("DELETE FROM BookingItem WHERE id = :id");
+            $statement->bindParam(":id", $bookingItem->id, PDO::PARAM_INT);
             return $statement->execute();
         }        
+
+        function deleteBookingItemById($bookingItemId) {
+            $pdo = $this->getPDO();
+
+            $statement = $pdo->prepare("DELETE FROM BookingItemSchedule WHERE bookingItemId = :id");
+            $statement->bindParam(":id", $bookingItemId, PDO::PARAM_INT);          
+            $statement->execute();            
+
+            $statement = $pdo->prepare("DELETE FROM BookingItem WHERE id = :id");
+            $statement->bindParam(":id", $bookingItemId, PDO::PARAM_INT);
+            return $statement->execute();
+        } 
 
         function getAllBookings() {
             $pdo = $this->getPDO();
@@ -549,7 +642,10 @@
                 $bookingItem->preferredDriver = $basketItem->preferredDriver;
 
                 $this->addBookingItem($bookingItem);
+                
                 $bookingItem->id = $pdo->lastInsertId();
+
+                $basketItem->bookingItemId = $bookingItem->id;
 
                 $dateFrom = new DateTime($bookingItem->dateFrom);
                 $dateTo = new DateTime($bookingItem->dateTo);           

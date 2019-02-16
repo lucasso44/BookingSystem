@@ -12,6 +12,16 @@ switch($cmd) {
     case "getBookingReport": 
         $data = BookingDatabase::getInstance()->getBookingReport();
         break;
+    case "getCurrentPromotions":
+        $data = BookingDatabase:: getInstance()->getCurrentPromotions();
+        foreach($data as $promotion)
+        {
+            $promotion->expiringDate = getDateInUKFormat($promotion->expiringDate);
+        }
+        break;
+    case "getCurrentVehicles":
+        $data = BookingDatabase:: getInstance()->getCurrentVehicles();
+        break;
     default:
         throw new AppException("Invalid cmd querystring parameter");
 }

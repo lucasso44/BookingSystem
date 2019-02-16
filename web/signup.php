@@ -1,6 +1,11 @@
 <?php
     require_once("imports.php");
 
+    $url = getRequestFieldValue("url", false);
+    $urlFrom = getRequestFieldValue("from", false);
+
+    $signUpMessage = "";
+    
     if (isPostBackWithField("registerCustomerAttempt")) {
 
         $customer = new Customer();
@@ -12,13 +17,24 @@
         $customer->companyName = getPostFieldValue("companyName", true);
         $customer->phoneNo = getPostFieldValue("phoneNo", true);
         $customer->isAdministrator = false;
-    
-        BookingDatabase::getInstance()->addCustomer($customer);
 
-        loginUser($customer->emailAddress, $clearPassword);
+        try
+        {
+            BookingDatabase::getInstance()->addCustomer($customer);
 
-        header("Location: index.php");
-        die();            
+            loginUser($customer->emailAddress, $clearPassword);
+
+            if($url == "") {
+                header("Location: index.php");
+            }
+            else {
+                header("Location: $url");
+            }
+            die();            
+        }
+        catch(AppException $ae) {
+            $signUpMessage = $ae->getMessage();
+        }            
     }
 
     require_once("includes/header.php");

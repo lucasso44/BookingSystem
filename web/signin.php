@@ -1,9 +1,18 @@
 <?php
 require_once("imports.php");
 
+$url = getRequestFieldValue("url", false);
+$urlFrom = getRequestFieldValue("from", false);
+
 if (isPostBackWithField("signinAttempt")) {
     if($authUser->isSignedIn) {
-        header("Location: index.php");
+
+        if($url == "") {
+            header("Location: index.php");
+        }
+        else {
+            header("Location: $url");
+        }
         die();
     }
 }    

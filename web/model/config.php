@@ -1,6 +1,6 @@
 <?php
     define("DEBUG_MODE", true);
-    define("DB_LOCAL", false);
+    define("DB_LOCAL", true);
 
     if(DB_LOCAL) {
         define("DB_DSN", "mysql:host=localhost;dbname=db_k1736700");        
@@ -17,5 +17,4 @@
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
     }
-
 ?>
